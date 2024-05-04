@@ -1,5 +1,6 @@
 package com.zeon.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class Wishlist {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    //@JsonBackReference
     private User user;
 
     @ManyToOne
