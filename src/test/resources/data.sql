@@ -82,7 +82,6 @@ FROM dates d
 CROSS JOIN LATERAL (SELECT id FROM users ORDER BY random() LIMIT 1) u
 CROSS JOIN generate_series(1, 500) s;
 
-
 -- Insert products for each order
 INSERT INTO order_products (order_id, product_id, quantity, price_per_unit)
 SELECT
