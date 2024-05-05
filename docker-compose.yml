@@ -38,8 +38,21 @@ services:
       - "8085:8080"
     depends_on:
       - ecommerce-postgres
+    volumes:
+      - ecommerce-app-logs:/app/logs
+  graphite:
+    image: graphiteapp/graphite-statsd
+    container_name: graphite
+    restart: always
+    ports:
+      - "85:80"
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
     
 
 volumes:
   ecommerce-pgdata:
   ecommerce-pgadmin-data:
+  ecommerce-app-logs:
