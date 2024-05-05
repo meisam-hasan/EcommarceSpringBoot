@@ -20,7 +20,7 @@ public class Wishlist {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    //@JsonBackReference
+    // @JsonBackReference
     private User user;
 
     @ManyToOne

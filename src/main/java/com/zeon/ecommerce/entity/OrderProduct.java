@@ -26,5 +26,8 @@ public class OrderProduct {
     private Product product;
 
     private int quantity;
+
+    @Column(name = "price_per_unit")
+    private double pricePerUnit;
 }
 
