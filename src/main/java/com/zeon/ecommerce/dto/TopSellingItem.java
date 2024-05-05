@@ -13,7 +13,4 @@ import lombok.NoArgsConstructor;
 public class TopSellingItem {
     private Product product;
     private Double totalSaleAmount;
-
-  
-
 }

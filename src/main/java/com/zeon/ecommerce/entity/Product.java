@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-// import org.hibernate.mapping.Set;
 
 @Entity
 @Table(name = "products")
@@ -27,11 +26,8 @@ public class Product {
     private String name;
     private double price;
 
-    // @OneToMany(mappedBy = "product")
-    // @JsonIgnore
-    // private List<OrderProduct> orderProducts;
-    @ManyToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product")
     @JsonIgnore
-    private Set<OrderProduct> orderProducts = new HashSet<>();
+    private List<OrderProduct> orderProducts;
 }
 

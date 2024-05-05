@@ -30,6 +30,9 @@ public class ProductRepositoryTest {
     @Test
     public void testTop5SellingItemsLastMonth() {
         List<TopCountSellingItem> topCountSellingItems = repository.findTop5SellingItemsLastMonth();
+        topCountSellingItems.forEach(top->{
+            System.out.println(top.getName()+ " "+top.getSalesCount());
+        });
         assertThat(topCountSellingItems.size()).isGreaterThan(0);
     }
 
