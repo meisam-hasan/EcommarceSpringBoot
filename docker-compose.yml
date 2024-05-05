@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  ecommerce-postgres:
+    image: postgres
+    healthcheck:
+      test: "pg_isready -h db"
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    container_name: ecommerce-pgdb
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - ecommerce-pgdata:/var/lib/postgresql/data
+  ecommerce-pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecommerce-pgadmin4-container
+    restart: always
+    ports:
+      - "8889:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@mail.com
+      PGADMIN_DEFAULT_PASSWORD: 1234
+    volumes:
+      - ecommerce-pgadmin-data:/var/lib/pgadmin
+  ecommerce-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-spring-container
+    ports:
+      - "8085:8080"
+    depends_on:
+      - ecommerce-postgres
+    
+
+volumes:
+  ecommerce-pgdata:
+  ecommerce-pgadmin-data:

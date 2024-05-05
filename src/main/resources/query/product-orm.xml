@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+    <named-native-query name="get_top5_selling_items_last_month">
+        <query><![CDATA[
+            SELECT p AS product, COUNT(op.id) AS salesCount , p.id as id, p.price as price, p.name as name
+                        FROM products p JOIN order_products op ON p.id = op.product_id
+                        JOIN orders o ON op.order_id = o.id
+                        WHERE (DATE_TRUNC('month', CURRENT_DATE) - interval '1 month') = DATE_TRUNC('month', o.order_date) 
+                        GROUP BY p.id, p.name, p.price ORDER BY salesCount DESC 
+                        LIMIT 5]]></query>
+    </named-native-query>
+</entity-mappings>
