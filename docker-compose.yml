@@ -33,7 +33,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: my-spring-container
+    container_name: ecommerce-app-container
     ports:
       - "8085:8080"
     depends_on:
