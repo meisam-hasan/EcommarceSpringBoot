@@ -18,6 +18,8 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - ecommerce-pgdata:/var/lib/postgresql/data
+  
+
   ecommerce-pgadmin:
     image: dpage/pgadmin4
     container_name: ecommerce-pgadmin4-container
@@ -29,6 +31,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: 1234
     volumes:
       - ecommerce-pgadmin-data:/var/lib/pgadmin
+  
+
   ecommerce-app:
     build:
       context: .
@@ -39,7 +43,9 @@ services:
     depends_on:
       - ecommerce-postgres
     volumes:
-      - ecommerce-app-logs:/app/logs
+      - ./logs:/app/logs
+  
+  
   graphite:
     image: graphiteapp/graphite-statsd
     container_name: graphite
@@ -50,9 +56,66 @@ services:
       - "2023-2024:2023-2024"
       - "8125:8125/udp"
       - "8126:8126"
+  
+  elasticsearch:
+    image: elasticsearch:8.9.0
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ecommerce-elasticsearch-data:/usr/share/elasticsearch/data/
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - xpack.security.enabled=false
+      - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
+    # networks:
+    #   - elastic
+
+  logstash:
+    build:
+      context: .
+      dockerfile: ./config/logstash/Dockerfile
+    container_name: logstash
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./logs/:/logs
+      - ecommerce-loadstash-data:/usr/share/logstash/data
+
+    # networks:
+    #   - elastic
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:8.9.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ecommerce-kibana-data:/usr/share/kibana/data
+    # networks:
+    #   - elastic
+    depends_on:
+      - elasticsearch
+
+# networks:
+#   elastic:
+#     driver: bridge
     
 
 volumes:
   ecommerce-pgdata:
   ecommerce-pgadmin-data:
   ecommerce-app-logs:
+  ecommerce-kibana-data:
+  ecommerce-loadstash-data:
+  ecommerce-elasticsearch-data:
+    driver: local

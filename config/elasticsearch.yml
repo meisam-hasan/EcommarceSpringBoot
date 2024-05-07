@@ -1,0 +1,4 @@
+cluster.name: "elasticsearch"
+network.host: localhost
+xpack.profiling.enabled: true
+xpack.monitoring.templates.enabled: true

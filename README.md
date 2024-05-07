@@ -18,7 +18,14 @@ The application base url is:
 http://localhost:8085/
 ```
      
- `
+## Log visualization Endpoint
+
+The application log visualization using elk:
+
+```
+http://localhost:5601/
+```
+    
 
 ## Metrics Endpoint
 

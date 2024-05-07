@@ -2,6 +2,13 @@
 <configuration>
 
     <property name="LOGS" value="/app/logs" />
+    <!-- Define properties -->
+    <property name="LOGSTASH_APPENDER_NAME" value="LOGSTASH"/>
+    <property name="ASYNC_LOGSTASH_APPENDER_NAME" value="ASYNC_LOGSTASH"/>
+    <springProperty scope="context" name="appName" source="spring.application.name"/>
+    <springProperty scope="context" name="logstashHost" source="logstash.host"/>
+    <springProperty scope="context" name="logstashPort" source="logstash.port"/>
+    <property name="logstashQueueSize" value="512"/>
 
     <appender name="Console"
         class="ch.qos.logback.core.ConsoleAppender">
@@ -31,17 +38,41 @@
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>
+    <!-- Define appenders -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${logstashHost}:${logstashPort}</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"servicename":"${appName}"}</customFields>
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <rootCauseFirst>true</rootCauseFirst>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_LOGSTASH_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <appender-ref ref="LOGSTASH"/>
+    </appender>
     
     <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
+        <appender-ref ref="LOGSTASH" />
     </root>
 
-    <!-- LOG "com.baeldung*" at TRACE level -->
-    <logger name="com.baeldung" level="trace" additivity="false">
+    <!-- LOG "com.zeon.ecommerce.*" at TRACE level -->
+    <logger name="com.zeon.ecommerce" level="trace" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
+        <appender-ref ref="LOGSTASH" />
+    </logger>
+
+    <!-- LOG "com.zeon.ecommerce.*" at TRACE level -->
+    <logger name="com.zeon.ecommerce" level="debug" additivity="false">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+        <appender-ref ref="LOGSTASH" />
     </logger>
 
 </configuration>
